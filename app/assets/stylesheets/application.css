@@ -41,3 +41,7 @@ body,
 .message form {
     display: inline-block;
 }
+
+#error_explanation {
+    color: red;
+}

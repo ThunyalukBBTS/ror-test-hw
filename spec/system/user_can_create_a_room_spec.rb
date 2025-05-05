@@ -8,6 +8,13 @@ describe "Room management: " do
       user_clicks_create_room
       user_should_see_a_new_room
     end
+
+    it "does not allow room creation without a name", js: true do
+      user_goes_to_home_page
+      user_leave_room_name_blank
+      user_clicks_create_room
+      user_should_see_an_error_message
+    end
   end
 
   def user_goes_to_home_page
@@ -26,5 +33,15 @@ describe "Room management: " do
 
   def user_should_see_a_new_room
     expect(page).to have_content 'DEMO ROOM'
+  end
+
+  def user_leave_room_name_blank 
+    within '#actions' do
+      fill_in 'room_name', with: ""
+    end
+  end
+
+  def user_should_see_an_error_message
+    expect(page).to have_content("Name can't be blank")
   end
 end

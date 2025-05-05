@@ -1,18 +1,19 @@
 require 'rails_helper'
 
-describe "Room management: " do
+describe "User can create a room" do
   context "when user visits the landing page" do
-    it "allows user to create a new room", js: true do
+    before do
       user_goes_to_home_page
-      user_enters_room_name
-      user_clicks_create_room
+      Room.where(name: 'DEMO ROOM').destroy_all
+    end
+
+    it "allows user to create a new room", js: true do
+      user_creates_room("DEMO ROOM")
       user_should_see_a_new_room
     end
 
     it "does not allow room creation without a name", js: true do
-      user_goes_to_home_page
-      user_leave_room_name_blank
-      user_clicks_create_room
+      user_creates_room("")
       user_should_see_an_error_message
     end
   end
@@ -21,24 +22,15 @@ describe "Room management: " do
     visit rooms_path
   end
 
-  def user_enters_room_name
+  def user_creates_room(name)
     within '#actions' do
-      fill_in 'room_name', with: "DEMO ROOM"
+      fill_in 'room_name', with: name
     end
-  end
-
-  def user_clicks_create_room
     click_button 'Create Room'
   end
 
   def user_should_see_a_new_room
-    expect(page).to have_content 'DEMO ROOM'
-  end
-
-  def user_leave_room_name_blank 
-    within '#actions' do
-      fill_in 'room_name', with: ""
-    end
+    expect(page).to have_selector('.room', text: 'DEMO ROOM', count: 1)
   end
 
   def user_should_see_an_error_message
